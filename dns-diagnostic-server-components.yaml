@@ -63,7 +63,7 @@ spec:
     spec:
       containers:
       - name: tailwinds-dns-diagnostic-server
-        image: tailwindsai/tailwinds-dns-diagnostic-server:latest
+        image: tailwindsai/tailwinds-dns-diagnostic-server:beta
       imagePullSecrets: 
       - name: regcred
       dnsPolicy: "Default"
