@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: tailwinds-trivy
+  labels:
+    app: tailwinds-trivy
+spec:
+  template:
+    metadata:
+      labels:
+        app: tailwinds-trivy
+    spec:
+      containers:
+        - name: tailwinds-trivy-container
+          image: kube-trivy:latest
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      restartPolicy: Always
