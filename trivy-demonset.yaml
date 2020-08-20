@@ -5,14 +5,18 @@ metadata:
   labels:
     app: tailwinds-trivy
 spec:
+  selector:
+    matchLabels:
+      name: tailwinds-trivy
   template:
     metadata:
       labels:
         app: tailwinds-trivy
     spec:
       containers:
-        - name: tailwinds-trivy-container
-          image: kube-trivy:latest
+        - name: tailwinds-trivy
+          image: tailwinds-trivy:latest
+          imagePullPolicy: IfNotPresent
           env:
             - name: MY_NODE_NAME
               valueFrom:
