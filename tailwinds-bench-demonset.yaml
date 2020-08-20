@@ -5,15 +5,20 @@ metadata:
   labels:
     app: tailwinds-bench
 spec:
+  selector:
+    matchLabels:
+      name: tailwinds-bench
   template:
     metadata:
       labels:
-        app: tailwinds-bench
+        name: tailwinds-bench
     spec:
       hostPID: true
       containers:
-        - name: tailwinds-bench-container
-          image: kube-bench:latest
+        - name: tailwinds-bench
+          image: tailwinds-bench:latest
+          command: ["./entrypoint.sh"]
+          imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: var-lib-etcd
               mountPath: /var/lib/etcd
@@ -32,7 +37,7 @@ spec:
             - name: usr-bin
               mountPath: /usr/local/mount-from-host/bin
               readOnly: true
-      restartPolicy: Never
+      restartPolicy: Always
       volumes:
         - name: var-lib-etcd
           hostPath:
