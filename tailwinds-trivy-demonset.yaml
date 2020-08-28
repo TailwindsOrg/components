@@ -52,6 +52,7 @@ spec:
         name: tailwinds-trivy
     spec:
       serviceAccountName: tailwinds-sa
+      restartPolicy: Always
       containers:
         - name: tailwinds-trivy
           image: tailwinds-trivy:latest
@@ -61,4 +62,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-      restartPolicy: Always
+          volumeMounts:
+            - name: dockersock
+              mountPath: "/var/run/docker.sock"
+      volumes:
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock      
