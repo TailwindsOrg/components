@@ -1,7 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tailwinds
+---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: tailwinds-bench
+  namespace: tailwinds
   labels:
     app: tailwinds-bench
 spec:
@@ -16,9 +23,8 @@ spec:
       hostPID: true
       containers:
         - name: tailwinds-bench
-          image: tailwinds-bench:latest
-          command: ["./entrypoint.sh"]
-          imagePullPolicy: IfNotPresent
+          image: rakamal86/tailwinds-bench:v1
+          imagePullPolicy: Always
           volumeMounts:
             - name: var-lib-etcd
               mountPath: /var/lib/etcd

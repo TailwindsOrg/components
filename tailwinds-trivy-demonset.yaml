@@ -55,7 +55,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: tailwinds-trivy
-          image: tailwinds-trivy:latest
+          image: rakamal86/tailwinds-trivy:v1
           imagePullPolicy: IfNotPresent
           env:
             - name: MY_NODE_NAME
