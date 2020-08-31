@@ -6,7 +6,7 @@ metadata:
   name: tailwinds-cr
 rules:
 - apiGroups: [""]
-  resources: ["pods", "endpoints"]
+  resources: ["namespaces", "pods", "endpoints"]
   verbs: ["get", "watch", "list"]
 ---
 # This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
