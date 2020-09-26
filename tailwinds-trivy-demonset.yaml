@@ -56,7 +56,7 @@ spec:
       containers:
         - name: tailwinds-trivy
           image: rakamal86/tailwinds-trivy:v1
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           env:
             - name: MY_NODE_NAME
               valueFrom:
