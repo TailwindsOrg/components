@@ -1,0 +1,71 @@
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: tailwinds-cr
+rules:
+- apiGroups: [""]
+  resources: ["namespaces", "pods", "endpoints"]
+  verbs: ["get", "watch", "list"]
+---
+# This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: tailwinds-crb
+subjects:
+- kind: ServiceAccount
+  name: tailwinds-sa
+  namespace: tailwinds
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: tailwinds-cr
+  apiGroup: ""
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tailwinds
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tailwinds-sa
+  namespace: tailwinds
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: tailwinds-image-scanner
+  namespace: tailwinds
+  labels:
+    app: tailwinds-image-scanner
+spec:
+  selector:
+    matchLabels:
+      name: tailwinds-image-scanner
+  template:
+    metadata:
+      labels:
+        name: tailwinds-image-scanner
+    spec:
+      serviceAccountName: tailwinds-sa
+      restartPolicy: Always
+      containers:
+        - name: tailwinds-image-scanner
+          image: tailwindsai/tailwinds-image-scanner:beta-v1
+          imagePullPolicy: Always
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: dockersock
+              mountPath: "/var/run/docker.sock"
+      volumes:
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock      
