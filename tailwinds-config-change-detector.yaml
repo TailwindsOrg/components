@@ -6,7 +6,7 @@ metadata:
   name: tailwinds-cr
 rules:
 - apiGroups: [""]
-  resources: ["pods", "endpoints"]
+  resources: ["pods", "endpoints", "configmaps", "secrets"]
   verbs: ["get", "watch", "list"]
 ---
 # This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
@@ -47,23 +47,24 @@ type: kubernetes.io/dockerconfigjson
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dns-diagnostic-server-deployment
+  name: config-change-detector
   namespace: tailwinds
   labels:
-    name: tailwinds-dns
+    name: tailwinds-config-change-detector
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: tailwinds-dns
+      name: tailwinds-config-change-detector
   template:
     metadata:
       labels:
-        name: tailwinds-dns
+        name: tailwinds-config-change-detector
     spec:
+      serviceAccountName: tailwinds-sa
       containers:
-      - name: tailwinds-dns-diagnostic-server
-        image: tailwindsai/tailwinds-dns-diagnostic-server:latest
-      imagePullSecrets: 
+      - name: tailwinds-config-change-detector
+        image: tailwindsai/tailwinds-config-change-detector:beta-v0.1
+      imagePullSecrets:
       - name: regcred
       dnsPolicy: "Default"
