@@ -6,7 +6,7 @@ metadata:
   name: tailwinds-cr
 rules:
 - apiGroups: [""]
-  resources: ["namespaces", "pods", "endpoints"]
+  resources: ["pods", "endpoints"]
   verbs: ["get", "watch", "list"]
 ---
 # This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
@@ -35,37 +35,36 @@ metadata:
   name: tailwinds-sa
   namespace: tailwinds
 ---
-apiVersion: apps/v1
-kind: DaemonSet
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MSI6eyJ1c2VybmFtZSI6InRhaWx3aW5kc2FpIiwicGFzc3dvcmQiOiJBbmJoa2FAMjAyMCIsImF1dGgiOiJkR0ZwYkhkcGJtUnpZV2s2UVc1aWFHdGhRREl3TWpBPSJ9fX0=
+kind: Secret
 metadata:
-  name: tailwinds-trivy
+  creationTimestamp: null
+  name: regcred
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns-diagnostic-server-deployment
   namespace: tailwinds
   labels:
-    app: tailwinds-trivy
+    name: tailwinds-dns
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      name: tailwinds-trivy
+      name: tailwinds-dns
   template:
     metadata:
       labels:
-        name: tailwinds-trivy
+        name: tailwinds-dns
     spec:
       serviceAccountName: tailwinds-sa
-      restartPolicy: Always
       containers:
-        - name: tailwinds-trivy
-          image: rakamal86/tailwinds-trivy:v1
-          imagePullPolicy: Always
-          env:
-            - name: MY_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-          volumeMounts:
-            - name: dockersock
-              mountPath: "/var/run/docker.sock"
-      volumes:
-      - name: dockersock
-        hostPath:
-          path: /var/run/docker.sock      
+      - name: tailwinds-dns-diagnostic-server
+        image: tailwindsai/tailwinds-dns-diagnostic-server:beta-v0.1
+      imagePullSecrets:
+      - name: regcred
+      dnsPolicy: "Default"
