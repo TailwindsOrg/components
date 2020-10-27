@@ -23,7 +23,7 @@ spec:
       hostPID: true
       containers:
         - name: tailwinds-kubernetes-scanner
-          image: tailwindsai/tailwinds-kubernetes-scanner:beta-v1
+          image: tailwindsai/tailwinds-kubernetes-scanner:beta-v0.2
           imagePullPolicy: Always
           volumeMounts:
             - name: var-lib-etcd

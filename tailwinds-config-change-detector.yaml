@@ -64,7 +64,7 @@ spec:
       serviceAccountName: tailwinds-sa
       containers:
       - name: tailwinds-config-change-detector
-        image: tailwindsai/tailwinds-config-change-detector:beta-v0.1
+        image: tailwindsai/tailwinds-config-change-detector:beta-v0.2
       imagePullSecrets:
       - name: regcred
       dnsPolicy: "Default"
