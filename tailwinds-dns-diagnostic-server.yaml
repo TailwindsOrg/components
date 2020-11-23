@@ -64,7 +64,7 @@ spec:
       serviceAccountName: tailwinds-sa
       containers:
       - name: tailwinds-dns-diagnostic-server
-        image: tailwindsai/tailwinds-dns-diagnostic-server:beta-v0.2
+        image: tailwindsai/tailwinds-dns-diagnostic-server:beta-v0.2.1
       imagePullSecrets:
       - name: regcred
       dnsPolicy: "Default"

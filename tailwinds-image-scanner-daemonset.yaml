@@ -55,7 +55,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: tailwinds-image-scanner
-          image: tailwindsai/tailwinds-image-scanner:beta-v0.2
+          image: tailwindsai/tailwinds-image-scanner:beta-v0.2.1
           imagePullPolicy: Always
           env:
             - name: MY_NODE_NAME
