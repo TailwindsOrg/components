@@ -1,0 +1,93 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tailwinds
+---
+# Popeye ServiceAccount.
+apiVersion: v1
+kind:       ServiceAccount
+metadata:
+  name:      tailwinds-sa
+  namespace: tailwinds
+
+---
+# Popeye needs get/list access on the following Kubernetes resources.
+apiVersion: rbac.authorization.k8s.io/v1
+kind:       ClusterRole
+metadata:
+  name: tailwinds-cr
+rules:
+- apiGroups: [""]
+  resources:
+   - configmaps
+   - deployments
+   - endpoints
+   - horizontalpodautoscalers
+   - namespaces
+   - nodes
+   - persistentvolumes
+   - persistentvolumeclaims
+   - pods
+   - secrets
+   - serviceaccounts
+   - services
+   - statefulsets
+  verbs:     ["get", "list"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources:
+  - clusterroles
+  - clusterrolebindings
+  - roles
+  - rolebindings
+  verbs:     ["get", "list"]
+- apiGroups: ["metrics.k8s.io"]
+  resources:
+  - pods
+  - nodes
+  verbs:     ["get", "list"]
+
+---
+# Binds Popeye to this ClusterRole.
+apiVersion: rbac.authorization.k8s.io/v1
+kind:       ClusterRoleBinding
+metadata:
+  name: tailwinds-crb
+subjects:
+- kind:     ServiceAccount
+  name:     tailwinds-sa
+  namespace: tailwinds
+roleRef:
+  kind:     ClusterRole
+  name:     tailwinds-cr
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:      tailwinds-visibility-scanner
+  namespace: tailwinds
+  labels:
+    app: tailwinds-visibility-scanner
+spec:
+  selector:
+    matchLabels:
+      app: tailwinds-visibility-scanner
+  template:
+    metadata:
+      labels:
+        app: tailwinds-visibility-scanner
+    spec:
+      serviceAccountName: tailwinds-sa
+      restartPolicy: Always
+      containers:
+        - name: tailwinds-visibility-scanner
+          image: derailed/popeye:latest
+          command: [ "/bin/sh", "-c", "--" ]
+          args: ["while true; do echo \"***START SCAN REPORT***\"; eval /bin/popeye -o json; echo \"***END SCAN REPORT***\"; sleep 2m; done;"]
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu:    500m
+              memory: 100Mi
