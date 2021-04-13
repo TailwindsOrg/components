@@ -6,7 +6,7 @@ metadata:
   name: tailwinds-cr
 rules:
 - apiGroups: [""]
-  resources: ["pods", "endpoints", "configmaps", "secrets"]
+  resources: ["namespaces", "pods", "endpoints", "configmaps", "secrets"]
   verbs: ["get", "watch", "list"]
 ---
 # This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
@@ -64,7 +64,7 @@ spec:
       serviceAccountName: tailwinds-sa
       containers:
       - name: tailwinds-config-change-detector
-        image: tailwindsai/tailwinds-config-change-detector:beta-v0.1
+        image: tailwindsai/tailwinds-config-change-detector:beta-v0.2.1
       imagePullSecrets:
       - name: regcred
       dnsPolicy: "Default"
