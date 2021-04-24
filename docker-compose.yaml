@@ -1,0 +1,46 @@
+# docker-compose -f docker-compose.yaml up -d
+version: '3.3'
+services:
+    navigator_nginx:
+        image: tailwindsai/navigator_nginx:beta-v3.0
+        hostname: navigator_nginx
+        container_name: navigator_nginx
+        depends_on:
+            - navigator_db
+            - navigator_server
+        restart: always
+        network_mode: host
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+
+    navigator_server:
+        image: tailwindsai/navigator_server:beta-v3.0
+        hostname: navigator_server
+        container_name: navigator_server
+        restart: always
+        environment:
+            - AM_URL=http://localhost:9093/api/v1/alerts
+        depends_on:
+            - navigator_db
+        network_mode: host
+        volumes:
+            - $HOME/.config:/root/.config
+            - $HOME/.kube:/root/.kube
+            - $HOME/.aws:/root/.aws
+
+    navigator_db:
+        image: tailwindsai/navigator_db:beta-v3.0
+        hostname: navigator_db
+        container_name: navigator_db
+        restart: always
+        network_mode: host
+
+    navigator_notifications:
+        image: tailwindsai/navigator_notifications:beta-v3.0
+        restart: always
+        command:
+            - '--config.file=/etc/alertmanager/config.yaml'
+            - '--storage.path=/alertmanager'
+        network_mode: host
+        volumes:
+            - $HOME/.config/alertmanager:/etc/alertmanager
