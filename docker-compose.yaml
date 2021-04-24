@@ -1,5 +1,9 @@
-# docker-compose -f docker-compose.yaml up -d
-version: '3.3'
+# Install Docker compose version 1.29 or Greater
+# https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
+# TO START: docker-compose -f docker-compose.yaml up -d
+# TO START WITH ALERT MANAGER: docker-compose --profile notifications -f docker-compose.yaml up -d
+# TO STOP: docker-compose -f docker-compose.yaml down
+version: '3.9'
 services:
     navigator_nginx:
         image: tailwindsai/navigator_nginx:beta-v3.0
@@ -37,6 +41,7 @@ services:
 
     navigator_notifications:
         image: tailwindsai/navigator_notifications:beta-v3.0
+        profiles: ["notifications"]
         restart: always
         command:
             - '--config.file=/etc/alertmanager/config.yaml'
