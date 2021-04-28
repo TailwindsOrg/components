@@ -10,7 +10,7 @@ services:
         hostname: navigator_nginx
         container_name: navigator_nginx
         depends_on:
-            - navigator_db
+            - navigator_cache
             - navigator_server
         restart: always
         network_mode: host
@@ -25,17 +25,17 @@ services:
         environment:
             - AM_URL=http://localhost:9093/api/v1/alerts
         depends_on:
-            - navigator_db
+            - navigator_cache
         network_mode: host
         volumes:
             - $HOME/.config:/root/.config
             - $HOME/.kube:/root/.kube
             - $HOME/.aws:/root/.aws
 
-    navigator_db:
-        image: tailwindsai/navigator_db:beta-v3.0
-        hostname: navigator_db
-        container_name: navigator_db
+    navigator_cache:
+        image: tailwindsai/navigator_cache:beta-v3.0
+        hostname: navigator_cache
+        container_name: navigator_cache
         restart: always
         network_mode: host
 
