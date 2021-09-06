@@ -33,19 +33,19 @@ rules:
    - serviceaccounts
    - services
    - statefulsets
-  verbs:     ["get", "list"]
+  verbs: ["get", "watch", "list"]
 - apiGroups: ["rbac.authorization.k8s.io"]
   resources:
   - clusterroles
   - clusterrolebindings
   - roles
   - rolebindings
-  verbs:     ["get", "list"]
+  verbs: ["get", "watch", "list"]
 - apiGroups: ["metrics.k8s.io"]
   resources:
   - pods
   - nodes
-  verbs:     ["get", "list"]
+  verbs: ["get", "watch", "list"]
 
 ---
 # Binds Popeye to this ClusterRole.
@@ -83,11 +83,14 @@ spec:
       restartPolicy: Always
       containers:
         - name: tailwinds-visibility-scanner
-          image: derailed/popeye:v0.9.0
+          image: derailed/popeye:v0.9.1
           command: [ "/bin/sh", "-c", "--" ]
           args: ["while true; do echo \"***START SCAN REPORT***\"; eval /bin/popeye -o json; echo \"***END SCAN REPORT***\"; sleep 2m; done;"]
           imagePullPolicy: IfNotPresent
           resources:
-            limits:
+            requests:
               cpu:    500m
-              memory: 100Mi
+              memory: 750Mi
+            limits:
+              cpu:    1000m
+              memory: 1500Mi

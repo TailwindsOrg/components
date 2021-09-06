@@ -1,40 +1,4 @@
 ---
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  # "namespace" omitted since ClusterRoles are not namespaced
-  name: tailwinds-cr
-rules:
-- apiGroups: [""]
-  resources: ["namespaces", "pods", "endpoints", "configmaps", "secrets"]
-  verbs: ["get", "watch", "list"]
----
-# This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: tailwinds-crb
-subjects:
-- kind: ServiceAccount
-  name: tailwinds-sa
-  namespace: tailwinds
-  apiGroup: ""
-roleRef:
-  kind: ClusterRole
-  name: tailwinds-cr
-  apiGroup: ""
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: tailwinds
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: tailwinds-sa
-  namespace: tailwinds
----
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -57,6 +21,13 @@ spec:
         - name: tailwinds-image-scanner
           image: tailwindsai/tailwinds-image-scanner:beta-v0.2.1
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu:    100m
+              memory: 250Mi
+            limits:
+              cpu:    1000m
+              memory: 1250Mi
           env:
             - name: MY_NODE_NAME
               valueFrom:

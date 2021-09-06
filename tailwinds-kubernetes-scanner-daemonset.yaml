@@ -1,9 +1,4 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: tailwinds
----
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -25,6 +20,13 @@ spec:
         - name: tailwinds-kubernetes-scanner
           image: tailwindsai/tailwinds-kubernetes-scanner:beta-v0.2.1
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu:    100m
+              memory: 250Mi
+            limits:
+              cpu:    1000m
+              memory: 1250Mi
           volumeMounts:
             - name: var-lib-etcd
               mountPath: /var/lib/etcd

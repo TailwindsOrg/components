@@ -6,11 +6,12 @@
 version: '3.9'
 services:
     navigator_nginx:
-        image: tailwindsai/navigator_nginx:beta-v3.0
+        image: tailwindsai/navigator_nginx:beta-v3.7
         hostname: navigator_nginx
         container_name: navigator_nginx
         depends_on:
             - navigator_cache
+            - navigator_db
             - navigator_server
         restart: always
         network_mode: host
@@ -18,7 +19,7 @@ services:
             - /etc/localtime:/etc/localtime:ro
 
     navigator_server:
-        image: tailwindsai/navigator_server:beta-v3.0
+        image: tailwindsai/navigator_manager:beta-v3.7
         hostname: navigator_server
         container_name: navigator_server
         restart: always
@@ -26,21 +27,50 @@ services:
             - AM_URL=http://localhost:9093/api/v1/alerts
         depends_on:
             - navigator_cache
+            - navigator_db
+            - navigator_worker
         network_mode: host
         volumes:
             - $HOME/.config:/root/.config
             - $HOME/.kube:/root/.kube
             - $HOME/.aws:/root/.aws
+            - $HOME/.azure:/root/.azure
+        command: ["/home/tailwinds/start-server.sh"]
+
+    navigator_worker:
+        image: tailwindsai/navigator_manager:beta-v3.7
+        hostname: navigator_worker
+        container_name: navigator_worker
+        restart: always
+        depends_on:
+            - navigator_cache
+            - navigator_db
+        network_mode: host
+        volumes:
+            - $HOME/.config:/root/.config
+            - $HOME/.kube:/root/.kube
+            - $HOME/.aws:/root/.aws
+            - $HOME/.azure:/root/.azure
+        command: ["/home/tailwinds/start-worker.sh"]
 
     navigator_cache:
-        image: tailwindsai/navigator_cache:beta-v3.0
+        image: tailwindsai/navigator_cache:beta-v3.7
         hostname: navigator_cache
         container_name: navigator_cache
         restart: always
         network_mode: host
+    
+    navigator_db:
+        image: tailwindsai/navigator_db:beta-v3.7
+        container_name: navigator_db
+        hostname: navigator_db
+        restart: always
+        network_mode: host
+        volumes:
+            - navigator_db_vol:/data/db/
 
     navigator_notifications:
-        image: tailwindsai/navigator_notifications:beta-v3.0
+        image: tailwindsai/navigator_notifications:beta-v3.7
         profiles: ["notifications"]
         restart: always
         command:
@@ -49,3 +79,7 @@ services:
         network_mode: host
         volumes:
             - $HOME/.config/alertmanager:/etc/alertmanager
+
+volumes:
+    navigator_db_vol:
+        driver: local
