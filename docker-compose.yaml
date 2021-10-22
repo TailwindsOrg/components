@@ -6,7 +6,7 @@
 version: '3.9'
 services:
     navigator_nginx:
-        image: tailwindsai/navigator_nginx:beta-v3.7
+        image: tailwindsai/navigator_nginx:beta-v3.12
         hostname: navigator_nginx
         container_name: navigator_nginx
         depends_on:
@@ -19,12 +19,13 @@ services:
             - /etc/localtime:/etc/localtime:ro
 
     navigator_server:
-        image: tailwindsai/navigator_manager:beta-v3.7
+        image: tailwindsai/navigator_manager:beta-v3.12
         hostname: navigator_server
         container_name: navigator_server
         restart: always
         environment:
             - AM_URL=http://localhost:9093/api/v1/alerts
+            # - PROMETHEUS_ENDPOINT=<endpoint ip or fqdn>
         depends_on:
             - navigator_cache
             - navigator_db
