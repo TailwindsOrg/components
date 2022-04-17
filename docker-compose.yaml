@@ -1,5 +1,10 @@
 # Install Docker compose version 1.29 or Greater
-# https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
+# https://docs.docker.com/compose/install/
+# For non-root user follow these additional steps
+#   sudo usermod -aG docker $USER                  
+#   sudo chgrp docker /usr/local/bin/docker-compose     
+#   sudo chmod 750 /usr/local/bin/docker-compose
+
 # TO START: docker-compose -f docker-compose.yaml up -d
 # TO START WITH ALERT MANAGER: docker-compose --profile notifications -f docker-compose.yaml up -d
 # TO STOP: docker-compose -f docker-compose.yaml down
