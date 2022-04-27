@@ -83,7 +83,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: tailwinds-visibility-scanner
-          image: derailed/popeye:v0.9.1
+          image: derailed/popeye:v0.9.8
           command: [ "/bin/sh", "-c", "--" ]
           args: ["while true; do echo \"***START SCAN REPORT***\"; eval /bin/popeye -o json; echo \"***END SCAN REPORT***\"; sleep 2m; done;"]
           imagePullPolicy: IfNotPresent

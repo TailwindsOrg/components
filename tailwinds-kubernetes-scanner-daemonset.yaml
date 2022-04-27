@@ -18,8 +18,10 @@ spec:
       hostPID: true
       containers:
         - name: tailwinds-kubernetes-scanner
-          image: tailwindsai/tailwinds-kubernetes-scanner:beta-v0.2.1
-          imagePullPolicy: Always
+          image: aquasec/kube-bench:v0.6.7
+          command: [ "/bin/sh", "-c", "--" ]
+          args: ["while true; do echo \"***START SCAN REPORT***\"; eval kube-bench \"$@\"; echo \"***END SCAN REPORT***\"; sleep 3h; done;"]
+          imagePullPolicy: IfNotPresent
           resources:
             requests:
               cpu:    100m
