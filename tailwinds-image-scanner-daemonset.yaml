@@ -4,6 +4,62 @@ kind: Namespace
 metadata:
   name: tailwinds
 ---
+apiVersion: v1
+kind:       ServiceAccount
+metadata:
+  name:      tailwinds-sa
+  namespace: tailwinds
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind:       ClusterRole
+metadata:
+  name: tailwinds-cr
+rules:
+- apiGroups: [""]
+  resources:
+   - configmaps
+   - deployments
+   - endpoints
+   - horizontalpodautoscalers
+   - namespaces
+   - nodes
+   - persistentvolumes
+   - persistentvolumeclaims
+   - pods
+   - secrets
+   - serviceaccounts
+   - services
+   - statefulsets
+  verbs: ["get", "watch", "list"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources:
+  - clusterroles
+  - clusterrolebindings
+  - roles
+  - rolebindings
+  verbs: ["get", "watch", "list"]
+- apiGroups: ["metrics.k8s.io"]
+  resources:
+  - pods
+  - nodes
+  verbs: ["get", "watch", "list"]
+
+---
+# Binds Popeye to this ClusterRole.
+apiVersion: rbac.authorization.k8s.io/v1
+kind:       ClusterRoleBinding
+metadata:
+  name: tailwinds-crb
+subjects:
+- kind:     ServiceAccount
+  name:     tailwinds-sa
+  namespace: tailwinds
+roleRef:
+  kind:     ClusterRole
+  name:     tailwinds-cr
+  apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -25,7 +81,7 @@ spec:
       containers:
         - name: tailwinds-image-scanner
           image: tailwindsai/tailwinds-image-scanner:beta-v0.2.1
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           resources:
             requests:
               cpu:    100m

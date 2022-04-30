@@ -24,7 +24,7 @@ spec:
       containers:
         - name: tailwinds-kubernetes-scanner
           image: tailwindsai/tailwinds-kubernetes-scanner:beta-v0.2.1
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           resources:
             requests:
               cpu:    100m
