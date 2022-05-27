@@ -11,7 +11,7 @@
 version: '3.9'
 services:
     navigator_nginx:
-        image: tailwindsai/navigator_nginx:beta-v3.2.2
+        image: tailwindsai/navigator_nginx:beta-v3.2.3
         hostname: navigator_nginx
         container_name: navigator_nginx
         depends_on:
@@ -24,7 +24,7 @@ services:
             - /etc/localtime:/etc/localtime:ro
 
     navigator_server:
-        image: tailwindsai/navigator_manager:beta-v3.2.2
+        image: tailwindsai/navigator_manager:beta-v3.2.3
         hostname: navigator_server
         container_name: navigator_server
         restart: always
@@ -47,7 +47,7 @@ services:
         command: ["/home/tailwinds/start-server.sh"]
 
     navigator_worker:
-        image: tailwindsai/navigator_manager:beta-v3.2.2
+        image: tailwindsai/navigator_manager:beta-v3.2.3
         hostname: navigator_worker
         container_name: navigator_worker
         restart: always
@@ -64,7 +64,7 @@ services:
         command: ["/home/tailwinds/start-worker.sh"]
 
     navigator_cache:
-        image: tailwindsai/navigator_cache:beta-v3.2.2
+        image: tailwindsai/navigator_cache:beta-v3.2.3
         hostname: navigator_cache
         container_name: navigator_cache
         restart: always
@@ -73,7 +73,7 @@ services:
             - navigator_cache_vol:/data
     
     navigator_db:
-        image: tailwindsai/navigator_db:beta-v3.2.2
+        image: tailwindsai/navigator_db:beta-v3.2.3
         container_name: navigator_db
         hostname: navigator_db
         restart: always
@@ -83,7 +83,7 @@ services:
             - navigator_db_vol:/data/configdb
 
     navigator_notifications:
-        image: tailwindsai/navigator_notifications:beta-v3.2.2
+        image: tailwindsai/navigator_notifications:beta-v3.2.3
         profiles: ["notifications"]
         restart: always
         command:
